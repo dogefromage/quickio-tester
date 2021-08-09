@@ -6,6 +6,9 @@ yarn-debug.log*
 yarn-error.log*
 
 dist/client/*.js
+dist/client/*.js.map
+dist/server/*.js
+dist/server/*.js.map
 
 # Runtime data
 pids
