@@ -9,15 +9,15 @@ let player = game.addEntity();
 
 class PlayerStuff extends quick.Component
 {
-    private transform: quick.Transform2d;
-    private input: quick.InputChannel;
+    private transform!: quick.Transform2d;
+    private input!: quick.InputChannel;
 
     start()
     {
-        this.transform = <quick.Transform2d>this.entity.getComponent(quick.Transform2d);
+        this.transform = this.entity.getComponent(quick.Transform2d);
         this.transform.position.xy = [ 300, 400 ];
         
-        let renderer = <quick.Renderer2d>this.entity.getComponent(quick.Renderer2d);
+        let renderer = this.entity.getComponent(quick.Renderer2d);
         renderer.addRenderStep((ctx) =>
         {
             ctx.fillStyle = '#ffffff';
@@ -40,6 +40,7 @@ class PlayerStuff extends quick.Component
     }
 }
 player.addComponent(PlayerStuff);
+player.addComponent(quick.RigidBody2d);
 
 function update()
 {
