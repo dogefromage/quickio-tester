@@ -1,18 +1,17 @@
 import * as quick from 'quickio';
 import './styles';
 
-let game = new quick.Game2d();
-game.start();
-game.constants.g = new quick.Vector2(0, 300);
-
 let canvas = document.querySelector('canvas');
 let ctx = canvas?.getContext('2d');
+
+let game = new quick.Game2d();
+game.start();
+game.constants.g = new quick.Vector2(0, 100);
+
 if (ctx)
 {
     game.setRenderingContext(ctx);
 }
-
-
 
 class PlayerStuff extends quick.Component
 {
@@ -23,21 +22,12 @@ class PlayerStuff extends quick.Component
     {
         this.transform = this.entity.getComponent(quick.Transform2d);
         this.transform.position.xy = [ 200, 100 ];
-        this.transform.scale.xy = [ 10, 20 ];
         
         let renderer = this.entity.getComponent(quick.Renderer2d);
-        renderer.addRenderStep((ctx) =>
-        {
-            let s = 1;
-            
-            ctx.strokeStyle = '#000000';
-            ctx.fillStyle = '#aaaaaa';
-
-            ctx.beginPath();
-            ctx.rect(-s, -s, 2 * s, 2 * s);
-            ctx.stroke();
-            ctx.fill();
-        });
+        renderer.addRenderStep(
+            new quick.PrimitiveShapes.NGon(5, 50),
+            new quick.RenderStyle2d().fill(0xff6666).stroke(0x000000).lineWidth(3),
+            );
 
         this.input = this.game.createInputChannel();
         
