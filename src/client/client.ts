@@ -1,11 +1,18 @@
 import * as quick from 'quickio';
+import './styles';
 
-let game = new quick.Game();
+let game = new quick.Game2d();
+game.start();
+game.constants.g = new quick.Vector2(0, 300);
 
 let canvas = document.querySelector('canvas');
 let ctx = canvas?.getContext('2d');
+if (ctx)
+{
+    game.setRenderingContext(ctx);
+}
 
-let player = game.addEntity();
+
 
 class PlayerStuff extends quick.Component
 {
@@ -15,19 +22,27 @@ class PlayerStuff extends quick.Component
     start()
     {
         this.transform = this.entity.getComponent(quick.Transform2d);
-        this.transform.position.xy = [ 300, 400 ];
+        this.transform.position.xy = [ 200, 100 ];
+        this.transform.scale.xy = [ 10, 20 ];
         
         let renderer = this.entity.getComponent(quick.Renderer2d);
         renderer.addRenderStep((ctx) =>
         {
-            ctx.fillStyle = '#ffffff';
-            ctx.fillRect(0, 0, 600, 600);
+            let s = 1;
             
-            ctx.fillStyle = '#000000';
-            ctx.fillRect(this.transform.position.x, this.transform.position.y, 20, 20);
+            ctx.strokeStyle = '#000000';
+            ctx.fillStyle = '#aaaaaa';
+
+            ctx.beginPath();
+            ctx.rect(-s, -s, 2 * s, 2 * s);
+            ctx.stroke();
+            ctx.fill();
         });
 
         this.input = this.game.createInputChannel();
+        
+        let rb = this.entity.addComponent(quick.RigidBody2d);
+        rb.angularVelocity = 3;
     }
 
     update()
@@ -39,17 +54,21 @@ class PlayerStuff extends quick.Component
         this.transform.position.y += 100 * yAxis;
     }
 }
-player.addComponent(PlayerStuff);
-player.addComponent(quick.RigidBody2d);
 
-function update()
+let player = game.addEntity();
+player.addComponent(PlayerStuff);
+
+class Background extends quick.Component
 {
-    game.update();
-    
-    if (ctx)
+    start()
     {
-        game.render(ctx);
+        let renderer = this.entity.getComponent(quick.Renderer2d);
+        renderer.addRenderStep((ctx) =>
+        {
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, 600, 600);
+        });
+        renderer.zDepth = -1;
     }
-    requestAnimationFrame(update);
 }
-requestAnimationFrame(update);
+game.addEntity().addComponent(Background);
